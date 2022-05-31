@@ -1,0 +1,124 @@
+%%[/*START AMPSCRIPT LOGIC*/
+
+/*SCOPE OF THIS SCRIPT IS FOR DYNAMIC TEMPLATES AGAINST CONTACTS AND LEADS*/
+
+/*╭╮╱╱╭╮╱╱╱╱╱╱╱╭╮╱╭╮*/
+/*┃╰╮╭╯┃╱╱╱╱╱╱╱┃┃╱┃┃*/
+/*╰╮┃┃╭┻━┳━┳┳━━┫╰━┫┃╭━━┳━━╮*/
+/*╱┃╰╯┃╭╮┃╭╋┫╭╮┃╭╮┃┃┃┃━┫━━┫*/
+/*╱╰╮╭┫╭╮┃┃┃┃╭╮┃╰╯┃╰┫┃━╋━━┃*/
+/*╱╱╰╯╰╯╰┻╯╰┻╯╰┻━━┻━┻━━┻━━╯*/
+/*INSTANTIATE THE VARIABLE USED IN THIS SCRIPT*/
+VAR @primaryKey, /*OBJECT ID FOR SALESFORCE RECORD*/
+@sfOBjectType, /*OBJECT TYPE FOR TARGET SEND*/
+@company, /*COMPANY A LEAD OR CONTACT IS ASSOCIATED*/
+@companyColor, /*PRIMARY COLOR OF THE COMPANY*/ 
+@companyLogo, /*LOGO URL OF THE COMPANY*/
+@flag, /*FLAG VAR USED IN LOGIC*/
+@contactAccountID /*ACCOUNT ID ASSOCIATE TO CONTACT RECORDS IN SF*/
+
+/*╭━━━╮╱╱╭╮╱╭━━━╮╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭╮╭━╮*/
+/*┃╭━╮┃╱╭╯╰╮┃╭━╮┃╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱┃┃┃╭╯*/
+/*┃╰━━┳━┻╮╭╯┃╰━╯┣━┳┳╮╭┳━━┳━┳╮╱╭╮┃╰╯╯╭━━┳╮╱╭╮*/
+/*╰━━╮┃┃━┫┃╱┃╭━━┫╭╋┫╰╯┃╭╮┃╭┫┃╱┃┃┃╭╮┃┃┃━┫┃╱┃┃*/
+/*┃╰━╯┃┃━┫╰╮┃┃╱╱┃┃┃┃┃┃┃╭╮┃┃┃╰━╯┃┃┃┃╰┫┃━┫╰━╯┃*/
+/*╰━━━┻━━┻━╯╰╯╱╱╰╯╰┻┻┻┻╯╰┻╯╰━╮╭╯╰╯╰━┻━━┻━╮╭╯*/
+/*╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃╱╱╱╱╱╱╱╱╭━╯┃*/
+/*╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯╱╱╱╱╱╱╱╱╰━━╯*/
+/*LOGIC TO DETERMINE AND SET @PRIMARYKEY VARIABLE BASED ON SENDING DATA EXTENSION*/
+/*IF PRIMARY KEY IS NULL TRY TO SET PRIMARY KEY */
+IF empty(@primaryKey)
+/*SET THE @PRIMARYKEY VARIABLE = LEAD OR CONTACT ID */
+THEN SET @primaryKEY = AttributeValue("Id")
+ELSE
+@primaryKEY = ""
+ ENDIF 
+/*IF PRIMARYKEY IS STILL NULL TRY TO SET PRIMARY KEY */
+IF empty(@primaryKey)
+/*SET THE @PRIMARY KEY VARIABLE = JOURNEY LEAD ID AND @SFOBJECTTYPE = LEAD */
+THEN 
+SET @primaryKEY = AttributeValue("Lead:Id")
+SET @sfOBjectType = "LEAD"
+ELSE
+@primaryKEY = ""
+ENDIF 
+/*IF PRIMARYKEY IS STILL NULL TRY TO SET PRIMARY KEY */
+IF empty(@primaryKey)
+/*SET THE @PRIMARYKEY VARIABLE = JOURNEY CONTACT ID AND @SFOBJECTTYPE = CONTACT */
+THEN 
+SET @primaryKEY = AttributeValue("Contact:Id")
+SET @sfOBjectType = "CONTACT"
+ELSE
+@primaryKEY = ""
+ ENDIF 
+  /*IF PRIMARYKEY IS STILL NULL TRY TO SET PRIMARY KEY */
+IF empty(@primaryKey)
+/*SET THE @PRIMARYKEY VARIABLE = MCDM ID */
+THEN 
+SET @primaryKEY = AttributeValue("id")
+ELSE
+@primaryKEY = ""
+ ENDIF 
+/*TO DO INSERT NEW LOGIC FOR CAMPAIGN MEMBERS & OTHER SEND OBJECTS IN SF*/
+/*TO DO TO DO TO DO*/
+
+/*╭━━━╮╱╱╭╮╱╭━━━┳╮╱╱╱╱╱╱╱╱╭╮╱╭━━━━╮*/
+/*┃╭━╮┃╱╭╯╰╮┃╭━╮┃┃╱╭╮╱╱╱╱╭╯╰╮┃╭╮╭╮┃*/
+/*┃╰━━┳━┻╮╭╯┃┃╱┃┃╰━╋╋━━┳━┻╮╭╯╰╯┃┃┣┫╱╭┳━━┳━━╮*/
+/*╰━━╮┃┃━┫┃╱┃┃╱┃┃╭╮┣┫┃━┫╭━┫┃╱╱╱┃┃┃┃╱┃┃╭╮┃┃━┫*/
+/*┃╰━╯┃┃━┫╰╮┃╰━╯┃╰╯┃┃┃━┫╰━┫╰╮╱╱┃┃┃╰━╯┃╰╯┃┃━┫*/
+/*╰━━━┻━━┻━╯╰━━━┻━━┫┣━━┻━━┻━╯╱╱╰╯╰━╮╭┫╭━┻━━╯*/
+/*╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭╯┃╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃┃┃*/
+/*╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━╯╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯╰╯*/
+/*DISCLAIMER*/
+/*THE CODE IS INTENTED TO HELP IDENTIFY THE SALESFORCE OBJECT TYPE*/
+/*YOU WILL NEED TO REVIEW YOUR ORG BEFORE IMPLEMENTING*/
+/*SET FLAG TO SEE IF THIS IS A LEAD*/
+SET @flag = Lookup("ENT.Lead_Salesforce_1","FirstName","Id", @primaryKey) 
+/*IF @SFOBJECTTYPE ATTRIBUTE AND @FLAG IS EMPTY EXECUTE LOGIC*/
+IF empty(@sfOBjectType) AND empty(@flag)
+/*SET THE @SFOBJECTTYPE = CONTACT */
+THEN 
+SET @sfOBjectType = "CONTACT"
+/*SET THE @SFOBJECTTYPE = LEAD */
+ELSE
+SET @sfOBjectType = "LEAD"
+ ENDIF 
+ 
+/*╭━━━┳━━━┳━━━━╮╭━━━┳━━━┳━╮╭━┳━━━┳━━━┳━╮╱╭┳╮╱╱╭╮*/
+/*┃╭━╮┃╭━━┫╭╮╭╮┃┃╭━╮┃╭━╮┃┃╰╯┃┃╭━╮┃╭━╮┃┃╰╮┃┃╰╮╭╯┃*/
+/*┃╰━━┫╰━━╋╯┃┃╰╯┃┃╱╰┫┃╱┃┃╭╮╭╮┃╰━╯┃┃╱┃┃╭╮╰╯┣╮╰╯╭╯*/
+/*╰━━╮┃╭━━╯╱┃┃╱╱┃┃╱╭┫┃╱┃┃┃┃┃┃┃╭━━┫╰━╯┃┃╰╮┃┃╰╮╭╯*/
+/*┃╰━╯┃╰━━╮╱┃┃╱╱┃╰━╯┃╰━╯┃┃┃┃┃┃┃╱╱┃╭━╮┃┃╱┃┃┃╱┃┃*/
+/*╰━━━┻━━━╯╱╰╯╱╱╰━━━┻━━━┻╯╰╯╰┻╯╱╱╰╯╱╰┻╯╱╰━╯╱╰╯*/
+/*THE CODE WILL SET THE COMPANY ASSOCIATION FOR LEADS AND CONTACTS*/
+/*IF @OBJECTTYPE = LEAD RUN LOGIC BELOW*/
+IF @sfOBjectType == "LEAD" THEN 
+/* SET @COMPANY = FIRM OF INTEREST FROM LEAD RECORD IN SF*/
+SET @company = Lookup("ENT.Lead_Salesforce_1","Firm_Interest__c","Id", @primaryKey) 
+/*IF @OBJECTTYPE = CONTACT WE CAN ASSUME IT IS A CONTACT*/
+ELSEIF @sfOBjectType == "CONTACT" THEN 
+/*SET @CONTACTACCOUNTID = THE ACCOUNT ID ON THE CONTACT OBJECT*/
+SET @contactAccountID = Lookup("ENT.Contact_Salesforce_2","AccountId","Id", @primaryKey) 
+/*LOOKUP AND SET @COMPANY = THE ACCOUNT NAME IN SALESFORCE*/
+SET @company = Lookup("ENT.Account_Salesforce_1","Name","Id", @contactAccountID) 
+ENDIF 
+
+/*╭━━━╮╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╭╮*/
+/*┃╭━╮┃╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╱╭╯╰╮*/
+/*┃╰━╯┣━━┳━┳━━┳━━┳━╮╭━━┫┃╭┳━━━┳━┻╮╭╋┳━━┳━╮*/
+/*┃╭━━┫┃━┫╭┫━━┫╭╮┃╭╮┫╭╮┃┃┣╋━━┃┃╭╮┃┃┣┫╭╮┃╭╮╮*/
+/*┃┃╱╱┃┃━┫┃┣━━┃╰╯┃┃┃┃╭╮┃╰┫┃┃━━┫╭╮┃╰┫┃╰╯┃┃┃┃*/
+/*╰╯╱╱╰━━┻╯╰━━┻━━┻╯╰┻╯╰┻━┻┻━━━┻╯╰┻━┻┻━━┻╯╰╯*/
+/*THIS CODE WILL EXECUTE IF COMPANY IS NOT NULL AND COMPANY MATCHES A FIRM*/
+IF not empty(@company) AND (@company=="Woodbury Financial" OR @company=="Triad Advisors" OR @company=="Securities America" OR @company=="SagePoint Financial" OR @company=="Royal Alliance Associates" OR @company=="FSC Securities") THEN
+/*SET PERSONALIZATION VALUES COLORS AND LOGO BASED ON VALUES IN HELPER DE*/
+SET @companyLogo = Lookup("Dynamic_Template_Branding","logoURL","brandName", @company) 
+SET @companyColor = Lookup("Dynamic_Template_Branding","primaryColor","brandName", @company) 
+/*FALL BACK LOGIC TO SET DEFAULT AG BRANDING IF THERE IS NO FIRM ASSOCIATED*/
+ELSE 
+SET @companyColor = "#2C3032" 
+SET @companyLogo = "https://image.s4.sfmc-content.com/lib/fe2e11727664057e7c1175/m/1/d7a22553-29cd-40d8-a0d5-3c115355cf39.jpg"
+ENDIF 
+
+/*END AMPSCRIPT LOGIC*/]%%
